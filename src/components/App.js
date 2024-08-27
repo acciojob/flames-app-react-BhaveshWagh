@@ -1,115 +1,80 @@
-import React, { Component } from "react";
-import '../styles/App.css';
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name1: '',
-            name2: '',
-            result: ''
-        };
+import React, { Component, useState } from "react";
+import "../styles/App.css";
+
+const messageArr = [
+  "Siblings",
+  "Friends",
+  "Love",
+  "Affection",
+  "Marriage",
+  "Enemy",
+];
+
+const removeMatchedChar = (str1, str2) => {
+    let newStr1 = str1;
+    let newStr2 = str2;
+  
+    const maxLength = Math.min(str1.length, str2.length);
+  
+    for (let i = 0; i < maxLength; i++) {
+      const ch1 = str1[i];
+      const ch2 = str2[i];
+      if (newStr1.includes(ch1) && newStr2.includes(ch1)) {
+        newStr1 = newStr1.replace(ch1, "");
+        newStr2 = newStr2.replace(ch1, "");
+      }
     }
+  
+    return [newStr1, newStr2];
+  };
 
-    handleChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-    }
+function App() {
+    const [input1, setInput1] = useState("");
+  const [input2, setInput2] = useState("");
+  const [message, setMessage] = useState("");
 
-    calculateRelationship = () => {
-        const { name1, name2 } = this.state;
 
-        if (!name1 || !name2) {
-            this.setState({ result: "Please Enter valid input" });
-            return;
-        }
+  function firstName  (e){
+    setInput1(e.target.value)
 
-        let tempName1 = name1;
-        let tempName2 = name2;
+    
+  }
 
-        // Removing common letters
-        for (let char of name1) {
-            if (tempName2.includes(char)) {
-                tempName1 = tempName1.replace(char, '');
-                tempName2 = tempName2.replace(char, '');
-            }
-        }
+  function SecondName  (e){
+    setInput2(e.target.value)
+  }
 
-        const remainingLength = tempName1.length + tempName2.length;
-        const flamesResult = remainingLength % 6;
 
-        let relationship = '';
-        switch (flamesResult) {
-            case 1:
-                relationship = "Friends";
-                break;
-            case 2:
-                relationship = "Love";
-                break;
-            case 3:
-                relationship = "Affection";
-                break;
-            case 4:
-                relationship = "Marriage";
-                break;
-            case 5:
-                relationship = "Enemy";
-                break;
-            case 0:
-                relationship = "Siblings";
-                break;
-            default:
-                relationship = "Please Enter valid input";
-        }
+  const handleCalculate = () => {
+    
+    if (input1 === "" || input2 === "")
+      return setMessage("Please Enter valid input");
+    let [str1, str2] = removeMatchedChar(input1, input2);
+   
+    const msgNumber = (str1.length + str2.length) % 6;
+    setMessage(messageArr[msgNumber]); // getting msg based on number
+  };
 
-        this.setState({ result: relationship });
-    }
+  const handleClear = () => {
+    setMessage("");
+    setInput1 (" ");
+    setInput2 (" ");
+  };
 
-    clearInput = () => {
-        this.setState({
-            name1: '',
-            name2: '',
-            result: ''
-        });
-    }
-
-    render() {
-        const { name1, name2, result } = this.state;
-
-        return (
-            <div id="main">
-                <input
-                    type="text"
-                    name="name1"
-                    data-testid="input1"
-                    value={name1}
-                    onChange={this.handleChange}
-                    placeholder="Enter first name"
-                />
-                <input
-                    type="text"
-                    name="name2"
-                    data-testid="input2"
-                    value={name2}
-                    onChange={this.handleChange}
-                    placeholder="Enter second name"
-                />
-                <button 
-                    data-testid="calculate_relationship" 
-                    onClick={this.calculateRelationship}>
-                    Calculate
-                </button>
-                <button 
-                    data-testid="clear" 
-                    onClick={this.clearInput}>
-                    Clear
-                </button>
-                <h3 data-testid="answer">{result}</h3>
-                {/* Do not remove the main div */}
-            </div>
-        );
-    }
+  return (
+    <div id="main">
+      <input name="name1" data-testid="input1"  type="text" onChange={(e)=>{firstName(e)}}/>
+      <input name="name2" data-testid="input2" type="text" onChange={(e)=>{SecondName(e)}} />
+      <button data-testid="calculate_relationship" onClick={handleCalculate}>
+        Calculate Relationship Future
+      </button>
+      <button data-testid="clear" onClick={handleClear}>
+        Clear
+      </button>
+      <h3 data-testid="answer">{message}</h3>
+    </div>
+  );
 }
 
 export default App;
