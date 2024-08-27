@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import "../styles/App.css";
 
 const messageArr = [
@@ -65,7 +65,7 @@ function App() {
         onChange={(e) => {
           firstName(e);
         }}
-      />    
+      />
       <input
         name="name2"
         data-testid="input2"
